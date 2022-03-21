@@ -30,8 +30,8 @@ module.exports.run = async (bot, message, args) => {
                 moderation = [],
                 cats = [];
 
-            readdirSync("./commands/").forEach((dirs) => {
-                const commands = readdirSync(`./commands/${dirs}`).filter(
+            readdirSync("./bot/commands/").forEach((dirs) => {
+                const commands = readdirSync(`./bot/commands/${dirs}`).filter(
                     (files) => files.endsWith(".js")
                 );
                 cats.push(
@@ -144,8 +144,8 @@ module.exports.run = async (bot, message, args) => {
                     });
             });
         } else if (args[0]) {
-            readdirSync("./commands/").forEach((dirs) => {
-                const commands = readdirSync(`./commands/${dirs}`).filter(
+            readdirSync("./bot/commands/").forEach((dirs) => {
+                const commands = readdirSync(`./bot/commands/${dirs}`).filter(
                     (files) => files.endsWith(".js")
                 );
                 for (const file of commands) {

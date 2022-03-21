@@ -1,4 +1,4 @@
-// const keepAlive = require("./server");
+// Imports
 const { Intents } = require("discord.js");
 const Discord = require("discord.js");
 const { Player } = require("discord-player");
@@ -7,9 +7,10 @@ const { MessageEmbed } = require("discord.js");
 require("dotenv").config();
 const Statcord = require("statcord.js");
 const mongoose = require("mongoose");
-const prefixschema = require("./db/prefix-schema");
-const guildSchema = require("./db/guild-schema");
+const prefixschema = require("./bot/db/prefix-schema");
+const guildSchema = require("./bot/db/guild-schema");
 
+// Declaring Client
 const client = new Discord.Client({
     intents: [
         Intents.FLAGS.GUILDS,
@@ -20,12 +21,15 @@ const client = new Discord.Client({
     ],
 });
 
+// Declaring Commands
 client.commands = new Discord.Collection();
+client.slashcommands = new Discord.Collection();
 
 let bot = {
     client,
 };
 
+// Initializing Stats
 const statcord = new Statcord.Client({
     client,
     key: process.env.statcord,
@@ -34,16 +38,25 @@ const statcord = new Statcord.Client({
     postNetworkStatistics: true /* Whether to post memory statistics or not, defaults to true */,
 });
 
+// Declaring Slash Commands
+const guildId = "947144607274237962"
+client.slashcommands = new Discord.Collection();
+client.loadSlashCommands = (bot, reload) =>
+    require("./bot/handlers/slashcommands")(bot, reload);
+client.loadSlashCommands(bot, false);
+
+// Music Config
 client.config = require("./musicconfig");
 client.player = new Player(client, client.config.opt.discordPlayer);
 const player = client.player;
 
-readdirSync("./commands/").forEach((dirs) => {
-    const commands = readdirSync(`./commands/${dirs}`).filter((files) =>
+// Loading Commands
+readdirSync("./bot/commands/").forEach((dirs) => {
+    const commands = readdirSync(`./bot/commands/${dirs}`).filter((files) =>
         files.endsWith(".js")
     );
     for (const file of commands) {
-        const command = require(`./commands/${dirs}/${file}`);
+        const command = require(`./bot/commands/${dirs}/${file}`);
         client.commands.set(command.help.name.toLowerCase(), command);
         if (command.help.aliases) {
             command.help.aliases.forEach((alias) => {
@@ -54,15 +67,30 @@ readdirSync("./commands/").forEach((dirs) => {
     console.log(`${dirs} Commands Loaded Successfully!`);
 });
 
+// On Ready
 client.on("ready", async () => {
+    // Connect Mongo
     await mongoose.connect(process.env.mongo, { keepAlive: true }).then(() => {
         console.log("Mongo Connected");
     });
+    // Connect Statcord
     statcord.autopost().then(() => {
         console.log("Statcord Connected");
     });
 
+    // Declaring guild for slash command
+    const guild = client.guilds.cache.get(guildId)
+    if (!guild)
+        return console.error("Target guild not found")
+    
+    // Setting & Loading Slash command
+    // await guild.commands.set([...client.slashcommands.values()])
+    // console.log(`Successfully loaded in ${client.slashcommands.size}`)
+
+    // Login bot
     console.log(`Logged in as ${client.user.tag}!`);
+
+    // RPC
     let statuses = [
         { name: "Coming Soon", type: "WATCHING" },
         { name: "pro!", type: "LISTENING" },
@@ -81,18 +109,31 @@ client.on("ready", async () => {
         });
         i++;
     }, 5000);
+
+    // Bot link perms
     const link = client.generateInvite({
         scopes: ["applications.commands", "bot"],
         permissions: ["8"],
     });
+
+    // Generate bot link
     console.log(`Generated application invite link: ${link}`);
 });
 
+// On Guild Create
 client.on("guildCreate",async (guild) => {
-    await new guildSchema({
-        server: guild.id,
-    }).save();
+    setTimeout(async () => {
+        await new prefixschema({
+            server: guild.id,
+            prefix: "pro!",
+        }).save();
+        await new guildSchema({
+            server: guild.id,
+        }).save();
+    }, 1000);
 });
+
+// On Guild Delete
 client.on("guildDelete",async (guild) => {
     await guildSchema.findOneAndDelete({
         server: guild.id,
@@ -102,13 +143,9 @@ client.on("guildDelete",async (guild) => {
     });
 });
 
-client.slashcommands = new Discord.Collection();
-
-client.loadSlashCommands = (bot, reload) =>
-    require("./handlers/slashcommands")(bot, reload);
-client.loadSlashCommands(bot, false);
-
+// Interaction Create
 client.on("interactionCreate", (interaction) => {
+    //  Slash Command Settings
     if (!interaction.isCommand()) return;
     if (!interaction.inGuild())
         interaction.reply("This command can only be used in a server");
@@ -125,6 +162,7 @@ client.on("interactionCreate", (interaction) => {
     slashcmd.run(client, interaction);
 });
 
+// On Guild Member Add
 client.on("guildMemberAdd", (member) => {
     if (member.guild == 947144607274237962) {
         member.guild.channels.cache
@@ -134,15 +172,8 @@ client.on("guildMemberAdd", (member) => {
             );
     }
 });
-client.on("guildCreate", (guild) => {
-    setTimeout(async () => {
-        await new prefixschema({
-            server: guild.id,
-            prefix: "pro!",
-        }).save();
-    }, 1000);
-});
 
+// On Message Create
 client.on("messageCreate", async (message) => {
     let prefixco = await prefixschema
         .find({ onSale: 1, server: message.guild.id }, "server prefix")
@@ -259,13 +290,15 @@ player.on("queueEnd", (queue) => {
     queue.metadata.send({ embeds: [embed] });
 });
 
+// Statcord
 statcord.on("autopost-start", () => {
     console.log("Started autopost");
 });
 
 statcord.on("post", (status) => {
-    if (!status) console.log("Successful post");
+    if (!status){}
     else console.error(status);
 });
 
+// Client Login
 client.login(process.env.token);

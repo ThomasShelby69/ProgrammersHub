@@ -1,4 +1,4 @@
-const maxVol = require("../../musicconfig.js").opt.maxVol;
+const maxVol = require("../../../musicconfig.js").opt.maxVol;
 const { MessageEmbed } = require("discord.js");
 
 module.exports = {

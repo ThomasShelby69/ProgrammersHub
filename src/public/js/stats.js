@@ -1,5 +1,5 @@
 function fetchData() {
-    fetch("https://api.statcord.com/v3/947154170060882010")
+    fetch("https://api.statcord.com/v3/955501748171178045")
         .then((response) => {
             return response.json();
         })

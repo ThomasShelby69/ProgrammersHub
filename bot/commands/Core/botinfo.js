@@ -14,8 +14,8 @@ module.exports.run = async (bot, message, args) => {
         const guild = bot.guilds.cache.size;
         let dir = 0;
 
-        readdirSync("./commands/").forEach((dirs) => {
-            const commands = readdirSync(`./commands/${dirs}`).filter((files) =>
+        readdirSync("./bot/commands/").forEach((dirs) => {
+            const commands = readdirSync(`./bot/commands/${dirs}`).filter((files) =>
                 files.endsWith(".js")
             );
             for (const file of commands) {
