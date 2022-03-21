@@ -1,0 +1,32 @@
+{
+  "name": "programmershubbot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon ./dashboard.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.2",
+    "connect-mongo": "^4.6.0",
+    "discord-player": "^5.2.2",
+    "discord.js": "^13.6.0",
+    "dotenv": "^16.0.0",
+    "ejs": "^3.1.6",
+    "express": "^4.17.3",
+    "express-session": "^1.17.2",
+    "ffmpeg": "^0.0.4",
+    "ffmpeg-static": "^5.0.0",
+    "mongoose": "^6.2.7",
+    "nodemon": "^2.0.15",
+    "opusscript": "^0.0.8",
+    "passport": "^0.5.2",
+    "passport-discord": "^0.1.4",
+    "path": "^0.12.7",
+    "statcord.js": "^3.4.1"
+  }
+}
