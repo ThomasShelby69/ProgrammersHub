@@ -1,0 +1,229 @@
+<%- include ("./partials/header") %>
+  <div id="particles-js"></div>
+
+  <div class="scroll-up-btn">
+    <i class="fas fa-angle-up"></i>
+  </div>
+
+  <nav class="navbar">
+    <div class="max-width">
+      <div class="logo">
+        <a href="#home">Programmers Hub Bot<span></span></a>
+      </div>
+
+      <ul class="menu">
+        <li><a href="#home" class="menu-btn">Home</a></li>
+
+        <li>
+          <a href="#features" class="menu-btn" class="menu-btn">Features</a>
+        </li>
+
+        <li><a href="#stats" class="menu-btn">Stats</a></li>
+
+        <li><a href="#contributors" class="menu-btn">Contributors</a></li>
+
+        <li><a href="/discord" class="menu-btn">Support Server</a></li>
+
+        <% if(authorization=="Dashboard"){%>
+          <li><a href="/dashboard" class="menu-btn">Dashboard</a></li>
+        <% }else if(authorization=="Login"){%>
+          <li><a href="/auth" class="menu-btn">Login</a></li>
+        <% }%>
+      </ul>
+
+      <div class="menu-btn">
+        <i class="fas fa-bars"></i>
+      </div>
+    </div>
+  </nav>
+
+  <section class="home" id="home">
+    <div class="max-width">
+      <div class="home-content">
+        <div class="text-1">Hello, I am</div>
+
+        <div class="text-2">Programmers Hub Bot</div>
+
+        <div class="text-3">And I am <span class="typing"></span></div>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="features" id="features">
+    <div class="max-width">
+      <h2 class="title">My Ups</h2>
+
+      <div class="features-content">
+        <div class="card">
+          <div class="box">
+            <i class="fas fa-cogs"></i>
+
+            <div class="text">Customization</div>
+
+            <p>
+              Customize your Discord server using welcome and leave messages,
+              level up system, custom commands, and much more!
+            </p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="box">
+            <i class="fas fa-code"></i>
+
+            <div class="text">Games</div>
+
+            <p>
+              Tons of games waiting for you to play!
+            </p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="box">
+            <i class="fas fa-music"></i>
+
+            <div class="text">Music</div>
+
+            <p>
+              Extremely high quality music system where you can play songs in a Discord voice chat.
+            </p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="box">
+            <i class="fas fa-lock"></i>
+
+            <div class="text">Moderation</div>
+
+            <p>
+              Protect your Discord server with the bot's robust moderation and
+              powerful commands to improve and speed up moderation.
+            </p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="box">
+            <i class="fas fa-terminal"></i>
+
+            <div class="text">Web Dashboard</div>
+
+            <p>
+              Configure each and every setting from the Web Dashboard of this bot!!
+            </p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="box">
+            <i class="fas fa-arrow-up"></i>
+
+            <div class="text">Level up System</div>
+
+            <p>
+              Make your server more active by rewarding users points, roles,
+              and more for being active.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats" id="stats">
+    <div class="max-width">
+      <h2 class="title">
+        My Stats
+      </h2>
+
+      <div class="stats-content">
+        <div class="card" style="width: calc(50% - 20px);">
+          <div class="box">
+            <i class="fas fa-server"></i>
+
+            <div class="text">Servers</div>
+
+            <p id="server-count">Loading....</p>
+          </div>
+        </div>
+
+        <div class="card" style="width: calc(50% - 20px);">
+          <div class="box">
+            <i class="fas fa-user"></i>
+
+            <div class="text">Users</div>
+
+            <p id="user-count">Loading....</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="contributors" id="contributors">
+    <div class="max-width">
+      <h2 class="title">
+        Staff
+      </h2>
+      <div class="carousel owl-carousel">
+
+        <div class="cardd">
+          <div class="boxx">
+            <img src="https://i.imgur.com/Gt66HRA.gif" alt>
+            <div class="text">Thomas Shelby#6969</div>
+            <p>
+
+              <button class="badges owner">Owner</button>
+              <button class="badges developer">Developer</button>
+              <button class="badges designer">Designer</button>
+            </p>
+          </div>
+        </div>
+
+        <div class="cardd">
+          <div class="boxx">
+            <img src="https://i.imgur.com/WuhyWDq.png" alt>
+            <div class="text">dev-0737#2744</div>
+            <p>
+              <button class="badges helper">Helper</button>
+              <button class="badges manager">Manager</button>
+            </p>
+          </div>
+        </div>
+
+        <div class="cardd">
+          <div class="boxx">
+            <img src="https://i.imgur.com/GluySca.png" alt>
+            <div class="text">Cap.py#2910</div>
+            <p>
+              <button class="badges helper">Helper</button>
+              <button class="badges manager">Manager</button>
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    </div>
+  </section>
+
+  <div class="loader-wrapper">
+    <img src="https://cdn.discordapp.com/attachments/954298244475813963/954319508091306004/servergif.gif"
+      alt="Loading..." />
+
+    <div class="longfazers">
+      <span></span>
+
+      <span></span>
+
+      <span></span>
+
+      <span></span>
+    </div>
+  </div>
+  <script src="/js/stats.js"></script>
+  <script src="/js/typebanner.js"></script>
+  <%- include ("./partials/footer") %>

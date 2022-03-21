@@ -1,0 +1,68 @@
+<%- include ("./partials/header") %>
+<script>
+    var base_url = window.origin;
+</script>
+    <div id="particles-js"></div>
+
+    <div class="scroll-up-btn">
+        <i class="fas fa-angle-up"></i>
+    </div>
+
+    <%- include ("./partials/dashboardnav") %>
+
+    <section class="home" id="home">
+        <div class="max-width">
+            <div class="home-content">
+                <div class="text-1">Welcome to</div>
+
+                <div class="text-2">Programmers Hub Bot Dashboard</div>
+
+                <div class="text-3">Manage your servers</div>
+
+            </div>
+        </div>
+    </section>
+    <section class="stats servers" id="servers">
+      <div class="max-width">
+        <h2 class="title">
+          My Servers
+        </h2>
+  
+        <div class="stats-content">
+          <% var i = 0;%>
+          <% guilds.forEach(guild =>{ %>
+          <% if(botinguild[i]==true){%>
+            <div class="card" onclick="window.location=base_url+'/dashboard/<%-guild.id%>'">
+          <% }else{%>
+            <div class="card faded">
+          <% }%>
+                <div class="box">
+                    <% if(!guild.icon){%>
+                        <img src="https://i.imgur.com/NcZbIgC.png" alt>
+                    <%}else{%>
+                        <img src="https://cdn.discordapp.com/icons/<%-guild.id%>/<%-guild.icon%>.png" alt>
+                    <%}%>
+                    <div class="text"><%-guild.name%></div>
+                </div>
+            </div>
+        <% i++; %>
+        <% }) %>
+        </div>
+      </div>
+    </section>
+
+    <div class="loader-wrapper">
+        <img src="https://cdn.discordapp.com/attachments/954298244475813963/954319508091306004/servergif.gif"
+            alt="Loading..." />
+
+        <div class="longfazers">
+            <span></span>
+
+            <span></span>
+
+            <span></span>
+
+            <span></span>
+        </div>
+    </div>
+    <%- include ("./partials/footer") %>
