@@ -28,3 +28,5 @@ const schema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model("guild", schema);
+
+const Guild = (module.exports = mongoose.model("guild", schema));

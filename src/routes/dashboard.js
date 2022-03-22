@@ -2,6 +2,7 @@ const router = require("express").Router();
 const { Permissions } = require("discord.js");
 const BotinGuild = require("../models/BotinGuild");
 const Prefix = require("../models/client/prefix");
+const Guild = require("../models/client/guilddetails");
 const bodyParser = require("body-parser");
 
 function isAuthorized(req, res, next) {
@@ -67,9 +68,15 @@ router.get("/:guildid", isAuthorized, async (req, res) => {
         const guildprefix = await Prefix.findOne({
             server: req.params.guildid,
         });
+        const guild = await Guild.findOne({
+            server: req.params.guildid,
+        });
         res.render("server/server.ejs", {
             username: req.user.username,
             guildprefix: guildprefix.prefix,
+            avatar: req.user.avatar,
+            userid: req.user.discordId,
+            guilddetails: guild,
         });
     } else {
         res.redirect("/dashboard");

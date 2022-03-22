@@ -39,8 +39,7 @@ const statcord = new Statcord.Client({
 });
 
 // Declaring Slash Commands
-const guildId = "947144607274237962"
-client.slashcommands = new Discord.Collection();
+const guildId = "938645824219533322";
 client.loadSlashCommands = (bot, reload) =>
     require("./bot/handlers/slashcommands")(bot, reload);
 client.loadSlashCommands(bot, false);
@@ -79,13 +78,12 @@ client.on("ready", async () => {
     });
 
     // Declaring guild for slash command
-    const guild = client.guilds.cache.get(guildId)
-    if (!guild)
-        return console.error("Target guild not found")
-    
+    const guild = client.guilds.cache.get(guildId);
+    // if (!guild) return console.error("Target guild not found");
+
     // Setting & Loading Slash command
-    // await guild.commands.set([...client.slashcommands.values()])
-    // console.log(`Successfully loaded in ${client.slashcommands.size}`)
+    // await guild.commands.set([...client.slashcommands.values()]);
+    // console.log(`Successfully loaded in ${client.slashcommands.size}`);
 
     // Login bot
     console.log(`Logged in as ${client.user.tag}!`);
@@ -118,23 +116,82 @@ client.on("ready", async () => {
 
     // Generate bot link
     console.log(`Generated application invite link: ${link}`);
+
+    // Update Guild Infos
+    setInterval(async () => {
+        let guilds = await guildSchema.find();
+        // console.log(guilds);
+        for (const guild of guilds) {
+            let guildid = client.guilds.cache.get(guild.server);
+            const announcementchannel = guildid.channels.cache.filter(
+                (c) => c.type === "GUILD_NEWS"
+            ).size;
+            const textchannel =
+            guildid.channels.cache.filter((c) => c.type === "GUILD_TEXT").size +
+                announcementchannel;
+            const stagechannel = guildid.channels.cache.filter(
+                (c) => c.type === "GUILD_STAGE_VOICE"
+            ).size;
+            const voicechannel =
+                guildid.channels.cache.filter((c) => c.type === "GUILD_VOICE").size +
+                stagechannel;
+            await guildSchema.findOneAndDelete({
+                server: guild.server,
+            });
+            await new guildSchema({
+                server: guild.server,
+                members: guildid.memberCount,
+                category: guildid.channels.cache.filter(
+                    (ch) => ch.type === "GUILD_CATEGORY"
+                ).size,
+                textchannels: textchannel,
+                voicechannels: voicechannel,
+                roles: guildid.roles.cache.size,
+            }).save();
+        }
+    }, 5 * 60 * 1000);
 });
 
 // On Guild Create
-client.on("guildCreate",async (guild) => {
+client.on("guildCreate", async (guild) => {
     setTimeout(async () => {
+        const announcementchannel = guild.channels.cache.filter(
+            (c) => c.type === "GUILD_NEWS"
+        ).size;
+        const textchannel =
+            guild.channels.cache.filter((c) => c.type === "GUILD_TEXT").size +
+            announcementchannel;
+        const stagechannel = guild.channels.cache.filter(
+            (c) => c.type === "GUILD_STAGE_VOICE"
+        ).size;
+        const voicechannel =
+            guild.channels.cache.filter((c) => c.type === "GUILD_VOICE").size +
+            stagechannel;
+        await prefixschema.findOneAndDelete({
+            server: guild.id,
+        });
+        await guildSchema.findOneAndDelete({
+            server: guild.id,
+        });
         await new prefixschema({
             server: guild.id,
             prefix: "pro!",
         }).save();
         await new guildSchema({
             server: guild.id,
+            members: guild.memberCount,
+            category: guild.channels.cache.filter(
+                (ch) => ch.type === "GUILD_CATEGORY"
+            ).size,
+            textchannels: textchannel,
+            voicechannels: voicechannel,
+            roles: guild.roles.cache.size,
         }).save();
     }, 1000);
 });
 
 // On Guild Delete
-client.on("guildDelete",async (guild) => {
+client.on("guildDelete", async (guild) => {
     await guildSchema.findOneAndDelete({
         server: guild.id,
     });
@@ -145,7 +202,7 @@ client.on("guildDelete",async (guild) => {
 
 // Interaction Create
 client.on("interactionCreate", (interaction) => {
-    //  Slash Command Settings
+    // Setting up slash
     if (!interaction.isCommand()) return;
     if (!interaction.inGuild())
         interaction.reply("This command can only be used in a server");
@@ -296,8 +353,8 @@ statcord.on("autopost-start", () => {
 });
 
 statcord.on("post", (status) => {
-    if (!status){}
-    else console.error(status);
+    if (!status) {
+    } else console.error(status);
 });
 
 // Client Login
