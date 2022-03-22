@@ -106,7 +106,7 @@ client.on("ready", async () => {
             status: "online",
         });
         i++;
-    }, 5000);
+    }, 15 * 1000);
 
     // Bot link perms
     const link = client.generateInvite({
