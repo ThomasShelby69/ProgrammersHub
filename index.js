@@ -79,11 +79,11 @@ client.on("ready", async () => {
 
     // Declaring guild for slash command
     const guild = client.guilds.cache.get(guildId);
-    // if (!guild) return console.error("Target guild not found");
+    if (!guild) return console.error("Target guild not found");
 
     // Setting & Loading Slash command
-    // await guild.commands.set([...client.slashcommands.values()]);
-    // console.log(`Successfully loaded in ${client.slashcommands.size}`);
+    await guild.commands.set([...client.slashcommands.values()]);
+    console.log(`Successfully loaded in ${client.slashcommands.size}`);
 
     // Login bot
     console.log(`Logged in as ${client.user.tag}!`);
