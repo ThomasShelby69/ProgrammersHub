@@ -155,13 +155,14 @@ module.exports.run = async (bot, message, args) => {
                         message.reply({
                             embeds: [commandembed],
                         });
-                        invalidcom = false; 
+                        invalidcom = false;
                         break;
                     }
                     if (command.help.aliases) {
-                        command.help.aliases.forEach(alias => {
-                            if(alias==args[0]){
-                                let commandembed = executehelpconditions(command);
+                        command.help.aliases.forEach((alias) => {
+                            if (alias == args[0]) {
+                                let commandembed =
+                                    executehelpconditions(command);
                                 message.reply({
                                     embeds: [commandembed],
                                 });

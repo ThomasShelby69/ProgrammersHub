@@ -7,8 +7,17 @@ module.exports.run = async (bot, message, args) => {
             message.guild.members.cache.get(args[0]) ||
             message.guild.members.cache.find(
                 (x) => x.user.username.toLowerCase() === args[0]
-            ) ||
-            message.author;
+            );
+        if(!args[0]){
+            user = message.author;
+        }
+        if(!user){
+            message.reply({
+                content:
+                    "<:blobsweat:956482716830945321> Can't fetch Spotify Status!",
+            });
+            return;
+        }
         user = await message.guild.members.fetch(user);
 
         if (!user.presence?.status) {

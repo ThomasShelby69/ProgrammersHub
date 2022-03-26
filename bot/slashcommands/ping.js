@@ -3,7 +3,7 @@ const { client, interaction } = require("discord.js");
 
 const run = async (client, interaction) => {
     const wsping = Math.round(client.ws.ping);
-    const ping = Date.now() - message.createdTimestamp;
+    const ping = Date.now() - interaction.createdTimestamp;
     interaction.reply({
         embeds: [
             new Discord.MessageEmbed()

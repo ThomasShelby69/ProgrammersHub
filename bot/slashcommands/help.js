@@ -1,203 +1,222 @@
 const Discord = module.require("discord.js");
-const { client, interaction } = require("discord.js");
-const fs = require('fs');
-const { MessageEmbed, MessageActionRow, MessageButton } = module.require("discord.js");
+const { MessageEmbed, MessageActionRow, MessageButton } =
+    module.require("discord.js");
+const { readdirSync } = require("fs");
 
 const run = async (client, interaction) => {
-    let cmdinfo = interaction.options.getString("command")
-    if (!cmdinfo) {
-        const { guild } = interaction;
-        const { name } = guild;
-        const row = new MessageActionRow().addComponents(
-            new MessageButton()
-                .setCustomId("home")
-                .setLabel("Home")
-                .setStyle("DANGER"),
-            new MessageButton()
-                .setCustomId("botinfo")
-                .setLabel("Info 💻")
-                .setStyle("SUCCESS"),
-            new MessageButton()
-                .setCustomId("botmusic")
-                .setLabel("Music 🎵")
-                .setStyle("SUCCESS")
-        );
-        const embed = new MessageEmbed()
-            .setTitle("Bot Help Panel")
-            .setColor("#000")
-            .setDescription("A bot for Programmer's Hub Discord Community.\n\n> Use the Buttons below to control the help panel.\n> Do pro!help {command_name} for command information.\n> \n>>> <:dot:948182294450016286> `Information Commands` \n<:dot:948182294450016286> `Music Commands`")
-            .setFooter({text: "© Programmers Hub Bot | Bot Made by: Thomas Shelby#6969 "})
-            .setThumbnail(client.user.displayAvatarURL())
+    let cmdinfo = interaction.options.getString("command");
+    try {
+        if (!cmdinfo) {
+            const { guild } = interaction;
+            const { name } = guild;
+            const row = new MessageActionRow().addComponents(
+                new MessageButton()
+                    .setCustomId("home")
+                    .setLabel("Home")
+                    .setStyle("DANGER"),
+                new MessageButton()
+                    .setCustomId("botinfo")
+                    .setLabel("Info 💻")
+                    .setStyle("SUCCESS"),
+                new MessageButton()
+                    .setCustomId("botmod")
+                    .setLabel("Moderation 🛠")
+                    .setStyle("SUCCESS"),
+                new MessageButton()
+                    .setCustomId("botmusic")
+                    .setLabel("Music 🎵")
+                    .setStyle("SUCCESS")
+            );
+            let core = [],
+                music = [],
+                moderation = [],
+                cats = [];
 
-        const embed2 = new MessageEmbed()
-            .setTitle("Information Commands 💻")
-            .setColor("#000")
-            .setDescription("> <:dot:948182294450016286> `botinfo`\n > <:dot:948182294450016286> `serverinfo`\n > <:dot:948182294450016286> `whois`\n > <:dot:948182294450016286> `help`\n> <:dot:948182294450016286> `prefix`\n> <:dot:948182294450016286> `ping`\n> <:dot:948182294450016286> `uptime`")
-            .setFooter({text: "© Programmers Hub Bot | Bot Made by: Thomas Shelby#6969 "})
-            .setThumbnail(client.user.displayAvatarURL())
-            .setThumbnail(client.user.displayAvatarURL())
-
-        const embed3 = new MessageEmbed()
-            .setTitle("Music Commands 🎵")
-            .setColor("#000")
-            .setDescription("> <:dot2:949259396175765524> `back`\n > <:dot2:949259396175765524> `clear`\n > <:dot2:949259396175765524> `filter`\n > <:dot2:949259396175765524> `loop`\n> <:dot2:949259396175765524> `nowplaying`\n> <:dot2:949259396175765524> `pause`\n> <:dot2:949259396175765524> `play`\n> <:dot2:949259396175765524> `progress`\n> <:dot2:949259396175765524> `queue`\n> <:dot2:949259396175765524> `resume`\n> <:dot2:949259396175765524> `save`\n> <:dot2:949259396175765524> `search`\n> <:dot2:949259396175765524> `skip`\n> <:dot2:949259396175765524> `stop`\n> <:dot2:949259396175765524> `volume`")
-            .setFooter({text: "© Programmers Hub Bot | Bot Made by: Thomas Shelby#6969 "})
-            .setThumbnail(client.user.displayAvatarURL())
-
-        interaction.reply({
-            embeds: [embed],
-            components: [row]
-        });
-
-        const filter = (message) => {
-            if (interaction.user.id === interaction.user.id) return true;
-            return interaction.reply({
-                content: "You can't use this button.",
-                ephemeral: true
+            readdirSync("./bot/commands/").forEach((dirs) => {
+                const commands = readdirSync(`./bot/commands/${dirs}`).filter(
+                    (files) => files.endsWith(".js")
+                );
+                cats.push(
+                    "> <:dot:948182294450016286> `" + dirs + " Commands`"
+                );
+                for (const file of commands) {
+                    const command = require(`../commands/${dirs}/${file}`);
+                    if (dirs == "Core") {
+                        core.push(
+                            "> <:dot:948182294450016286> `" +
+                                command.help.name.toLowerCase() +
+                                "`"
+                        );
+                    }
+                    if (dirs == "Moderation") {
+                        moderation.push(
+                            "> <:dot2:949259396175765524> `" +
+                                command.help.name.toLowerCase() +
+                                "`"
+                        );
+                    }
+                    if (dirs == "Music") {
+                        music.push(
+                            "> <:dot3:953152539430387805> `" +
+                                command.help.name.toLowerCase() +
+                                "`"
+                        );
+                    }
+                }
             });
-        }
 
-        const collector = interaction.channel.createMessageComponentCollector({
-            filter, time: 1000 * 60
-        });
+            const embed = new MessageEmbed()
+                .setTitle("Bot Help Panel")
+                .setColor("#000")
+                .setDescription(
+                    "A bot for Programmer's Hub Discord Community.\n\n> Use the Buttons below to control the help panel.\n> Do pro!help {command_name} for command information.\n\n" +
+                        `${cats.join("\n")}`
+                )
+                .setFooter({
+                    text: "© Programmers Hub Bot | Bot Made by: Thomas Shelby#6969 ",
+                })
+                .setThumbnail(client.user.displayAvatarURL());
 
-        collector.on("collect", async (ButtonInteraction) => {
-            const id = ButtonInteraction.customId;
-            if (id === 'home') return ButtonInteraction.update({
+            const embed2 = new MessageEmbed()
+                .setTitle("Information Commands 💻")
+                .setColor("#000")
+                .setDescription(`${core.join("\n")}`)
+                .setFooter({
+                    text: "© Programmers Hub Bot | Bot Made by: Thomas Shelby#6969 ",
+                })
+                .setThumbnail(client.user.displayAvatarURL());
+
+            const embed3 = new MessageEmbed()
+                .setTitle("Music Commands 🎵")
+                .setColor("#000")
+                .setDescription(`${music.join("\n")}`)
+                .setFooter({
+                    text: "© Programmers Hub Bot | Bot Made by: Thomas Shelby#6969 ",
+                })
+                .setThumbnail(client.user.displayAvatarURL());
+
+            const embed4 = new MessageEmbed()
+                .setTitle("Moderation Commands 🛠")
+                .setColor("#000")
+                .setDescription(`${moderation.join("\n")}`)
+                .setFooter({
+                    text: "© Programmers Hub Bot | Bot Made by: Thomas Shelby#6969 ",
+                })
+                .setThumbnail(client.user.displayAvatarURL());
+
+            interaction.reply({
                 embeds: [embed],
-                components: [row]
-            })
-            if (id === 'botinfo') return ButtonInteraction.update({
-                embeds: [embed2],
-                components: [row]
-            })
-            if (id === 'botmusic') return ButtonInteraction.update({
-                embeds: [embed3],
-                components: [row]
-            })
+                components: [row],
+            });
+
+            const filter = (message) => {
+                if (interaction.user.id === interaction.user.id) return true;
+                return interaction.reply({
+                    content: "You can't use this button.",
+                    ephemeral: true,
+                });
+            };
+
+            const collector =
+                interaction.channel.createMessageComponentCollector({
+                    filter,
+                    time: 1000 * 60,
+                });
+
+            collector.on("collect", async (ButtonInteraction) => {
+                const id = ButtonInteraction.customId;
+                if (id === "home")
+                    return ButtonInteraction.update({
+                        embeds: [embed],
+                        components: [row],
+                    });
+                if (id === "botinfo")
+                    return ButtonInteraction.update({
+                        embeds: [embed2],
+                        components: [row],
+                    });
+                if (id === "botmusic")
+                    return ButtonInteraction.update({
+                        embeds: [embed3],
+                        components: [row],
+                    });
+                if (id === "botmod")
+                    return ButtonInteraction.update({
+                        embeds: [embed4],
+                        components: [row],
+                    });
+            });
+        } else if (cmdinfo) {
+            readdirSync("./bot/commands/").forEach((dirs) => {
+                const commands = readdirSync(`./bot/commands/${dirs}`).filter(
+                    (files) => files.endsWith(".js")
+                );
+                for (const file of commands) {
+                    const command = require(`../commands/${dirs}/${file}`);
+                    if (command.help.name.toLowerCase() == cmdinfo) {
+                        let commandembed = executehelpconditions(command);
+                        interaction.reply({
+                            embeds: [commandembed],
+                        });
+                        invalidcom = false;
+                        break;
+                    }
+                    if (command.help.aliases) {
+                        command.help.aliases.forEach((alias) => {
+                            if (alias == cmdinfo) {
+                                let commandembed =
+                                    executehelpconditions(command);
+                                interaction.reply({
+                                    embeds: [commandembed],
+                                });
+                                invalidcom = false;
+                            }
+                        });
+                    }
+                }
+            });
+            if (invalidcom == true) {
+                message.reply({
+                    embeds: [
+                        new Discord.MessageEmbed()
+                            .setTitle(`Invalid Command`)
+                            .setDescription(">>> Invalid command provided."),
+                    ],
+                });
+            }
+        }
+    } catch (e) {
+        console.log(e.stack);
+    }
+};
+
+function capcom(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+function executehelpconditions(command) {
+    let cmd = command.help.name.toLowerCase();
+    let cmdalias = false;
+    commandembed = new Discord.MessageEmbed()
+        .setTitle(capcom(cmd) + ` Command.`)
+        .setDescription(command.help.desc)
+        .addFields({
+            name: "Command:",
+            value: "> " + cmd,
+        });
+    if (command.help.aliases) {
+        cmdalias = [];
+        command.help.aliases.forEach((alias) => {
+            cmdalias.push(alias);
         });
     }
-    else if (cmdinfo == "botinfo") {
-        interaction.reply({
-            embeds: [
-                new Discord.MessageEmbed()
-                    .setTitle(`Botinfo Command`)
-                    .setDescription("This command helps you get all stats of bot.")
-                    .addFields(
-                        {
-                            name: 'Command:',
-                            value: ">>> botinfo",
-                        },
-                        {
-                            name: 'Alias',
-                            value: '>>> stats',
-                        }
-                    )
-            ]
-        })
+    if (!cmdalias === false) {
+        commandembed.addFields({
+            name: "Alias",
+            value: "> " + cmdalias.join(", "),
+        });
     }
-    else if (cmdinfo == "serverinfo") {
-        interaction.reply({
-            embeds: [
-                new Discord.MessageEmbed()
-                    .setTitle(`Serverinfo Command`)
-                    .setDescription("This command helps you get information of the server.")
-                    .addFields(
-                        {
-                            name: 'Command:',
-                            value: ">>> serverinfo",
-                        }
-                    )
-            ]
-        })
-    }
-    else if (cmdinfo == "whois") {
-        interaction.reply({
-            embeds: [
-                new Discord.MessageEmbed()
-                    .setTitle(`Whois Command`)
-                    .setDescription("This command helps you get details of a user.")
-                    .addFields(
-                        {
-                            name: 'Command:',
-                            value: ">>> whois",
-                        }
-                    )
-            ]
-        })
-    }
-    else if (cmdinfo == "help") {
-        interaction.reply({
-            embeds: [
-                new Discord.MessageEmbed()
-                    .setTitle(`Help Command`)
-                    .setDescription("This command helps you get commands of the bot.")
-                    .addFields(
-                        {
-                            name: 'Command:',
-                            value: ">>> help",
-                        },
-                        {
-                            name: 'Alias',
-                            value: '>>> commands, cmds',
-                        }
-                    )
-            ]
-        })
-    }
-    else if (cmdinfo == "prefix") {
-        interaction.reply({
-            embeds: [
-                new Discord.MessageEmbed()
-                    .setTitle(`Prefix Command`)
-                    .setDescription("This command helps you know the prefix of the bot.")
-                    .addFields(
-                        {
-                            name: 'Command:',
-                            value: ">>> prefix",
-                        }
-                    )
-            ]
-        })
-    }
-    else if (cmdinfo == "ping") {
-        interaction.reply({
-            embeds: [
-                new Discord.MessageEmbed()
-                    .setTitle(`Ping Command`)
-                    .setDescription("This command helps you know the ping of the bot.")
-                    .addFields(
-                        {
-                            name: 'Command:',
-                            value: ">>> ping",
-                        }
-                    )
-            ]
-        })
-    }
-    else if (cmdinfo == "uptime") {
-        interaction.reply({
-            embeds: [
-                new Discord.MessageEmbed()
-                    .setTitle(`Uptime Command`)
-                    .setDescription("This command helps you know the uptime of the bot.")
-                    .addFields(
-                        {
-                            name: 'Command:',
-                            value: ">>> ping",
-                        }
-                    )
-            ]
-        })
-    }else{
-        interaction.reply({
-            embeds: [
-                new Discord.MessageEmbed()
-                    .setTitle(`Invalid Command`)
-                    .setDescription(">>> Invalid command provided.")
-            ]
-        })
-    }
+    return commandembed;
 }
 
 module.exports = {
@@ -206,8 +225,11 @@ module.exports = {
     type: "CHAT_INPUT",
     options: [
         {
-            name: "command", description: "For command information",
-            type: "STRING", required: false
-        }],
-    run
-}
+            name: "command",
+            description: "For command information",
+            type: "STRING",
+            required: false,
+        },
+    ],
+    run,
+};
