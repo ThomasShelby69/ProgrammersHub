@@ -76,4 +76,5 @@ module.exports.run = async (bot, message, args) => {
 module.exports.help = {
     name: "spotifyactivity",
     desc: "This command helps you know spotify activity of a user.",
+    aliases: ["spotify"],
 };
