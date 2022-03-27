@@ -9,6 +9,9 @@ const Statcord = require("statcord.js");
 const mongoose = require("mongoose");
 const prefixschema = require("./bot/db/prefix-schema");
 const guildSchema = require("./bot/db/guild-schema");
+const afkschema = require("./bot/db/afk-schema");
+const moment = require("moment");
+require("moment-timezone");
 
 // Declaring Client
 const client = new Discord.Client({
@@ -127,14 +130,14 @@ client.on("ready", async () => {
                 (c) => c.type === "GUILD_NEWS"
             ).size;
             const textchannel =
-            guildid.channels.cache.filter((c) => c.type === "GUILD_TEXT").size +
-                announcementchannel;
+                guildid.channels.cache.filter((c) => c.type === "GUILD_TEXT")
+                    .size + announcementchannel;
             const stagechannel = guildid.channels.cache.filter(
                 (c) => c.type === "GUILD_STAGE_VOICE"
             ).size;
             const voicechannel =
-                guildid.channels.cache.filter((c) => c.type === "GUILD_VOICE").size +
-                stagechannel;
+                guildid.channels.cache.filter((c) => c.type === "GUILD_VOICE")
+                    .size + stagechannel;
             await guildSchema.findOneAndDelete({
                 server: guild.server,
             });
@@ -246,6 +249,54 @@ client.on("messageCreate", async (message) => {
     embed.setColor("BLACK");
 
     if (message.author.bot) return;
+
+    let checkafkguild = await afkschema
+        .find({ onSale: 1, server: message.guild.id }, "member message time")
+        .sort({ value: 1 });
+    let checkafkmember = false;
+    let memberreason;
+    let afktime;
+    const mentionedMember = message.mentions.members.first();
+    if (mentionedMember) {
+        checkafkguild.forEach((guildafk) => {
+            if (guildafk.member == mentionedMember.id) {
+                checkafkmember = true;
+                memberreason = guildafk.message;
+                afktime = moment
+                    .tz(guildafk.time, "HHmmss", "America/Scoresbysund")
+                    .fromNow();
+            }
+        });
+        if (checkafkmember == true) {
+            return message.reply({
+                embeds: [
+                    new Discord.MessageEmbed().setDescription(
+                        `${mentionedMember} is AFK: ${memberreason} from ${afktime}`
+                    ),
+                ],
+            });
+        }
+    }
+
+    for (const guildafk of checkafkguild) {
+        if (guildafk.member == message.author.id) {
+            await afkschema
+            .findOneAndDelete({
+                server: message.guild.id,
+                member: message.author.id,
+            })
+            .then(() => {
+                message.member.setNickname(null).catch(()=>{});
+                message.reply({
+                    embeds: [
+                        new Discord.MessageEmbed().setDescription(
+                            `Welcome Back!`
+                        ),
+                    ],
+                });
+            });
+        }
+    }
 
     let messageArray = message.content.split(/\s+/g);
     let command = messageArray[0];

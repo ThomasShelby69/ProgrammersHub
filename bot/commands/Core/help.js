@@ -14,7 +14,11 @@ module.exports.run = async (bot, message, args) => {
                     .setStyle("DANGER"),
                 new MessageButton()
                     .setCustomId("botinfo")
-                    .setLabel("Info 💻")
+                    .setLabel("Core 💻")
+                    .setStyle("SUCCESS"),
+                new MessageButton()
+                    .setCustomId("botmisc")
+                    .setLabel("Miscellaneous 💿")
                     .setStyle("SUCCESS"),
                 new MessageButton()
                     .setCustomId("botmod")
@@ -28,6 +32,7 @@ module.exports.run = async (bot, message, args) => {
             let core = [],
                 music = [],
                 moderation = [],
+                misc = [],
                 cats = [];
 
             readdirSync("./bot/commands/").forEach((dirs) => {
@@ -49,6 +54,13 @@ module.exports.run = async (bot, message, args) => {
                     if (dirs == "Moderation") {
                         moderation.push(
                             "> <:dot2:949259396175765524> `" +
+                                command.help.name.toLowerCase() +
+                                "`"
+                        );
+                    }
+                    if (dirs == "Miscellaneous") {
+                        misc.push(
+                            "> <:dot:957663246507196456> `" +
                                 command.help.name.toLowerCase() +
                                 "`"
                         );
@@ -76,7 +88,7 @@ module.exports.run = async (bot, message, args) => {
                 .setThumbnail(bot.user.displayAvatarURL());
 
             const embed2 = new MessageEmbed()
-                .setTitle("Information Commands 💻")
+                .setTitle("Core Commands 💻")
                 .setColor("#000")
                 .setDescription(`${core.join("\n")}`)
                 .setFooter({
@@ -97,6 +109,15 @@ module.exports.run = async (bot, message, args) => {
                 .setTitle("Moderation Commands 🛠")
                 .setColor("#000")
                 .setDescription(`${moderation.join("\n")}`)
+                .setFooter({
+                    text: "© Programmers Hub Bot | Bot Made by: Thomas Shelby#6969 ",
+                })
+                .setThumbnail(bot.user.displayAvatarURL());
+
+            const embed5 = new MessageEmbed()
+                .setTitle("Miscellaneous Commands 💿")
+                .setColor("#000")
+                .setDescription(`${misc.join("\n")}`)
                 .setFooter({
                     text: "© Programmers Hub Bot | Bot Made by: Thomas Shelby#6969 ",
                 })
@@ -140,6 +161,11 @@ module.exports.run = async (bot, message, args) => {
                 if (id === "botmod")
                     return ButtonInteraction.update({
                         embeds: [embed4],
+                        components: [row],
+                    });
+                if (id === "botmisc")
+                    return ButtonInteraction.update({
+                        embeds: [embed5],
                         components: [row],
                     });
             });
@@ -220,5 +246,4 @@ module.exports.help = {
     name: "help",
     aliases: ["cmds", "commands"],
     desc: "This command helps you get commands of the bot",
-    personalThoughts: "Its a command that helps.",
 };

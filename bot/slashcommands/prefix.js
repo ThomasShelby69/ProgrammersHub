@@ -14,15 +14,63 @@ const run = async (client, interaction) => {
     } else {
         prefix = prefixco[0].prefix;
     }
-    interaction.reply({
-        embeds: [
-            new Discord.MessageEmbed()
-                .setTitle(`Bot\'s Prefix`)
-                .setDescription(`${prefix}`)
-                .setFooter({text: "© Programmers Hub Bot | Bot Made by: Thomas Shelby#6969 "})
-        ]
-    })
-}
+    if(!setnew){
+        interaction.reply({
+            embeds: [
+                new Discord.MessageEmbed()
+                    .setTitle(`Bot\'s Prefix`)
+                    .setDescription(`${prefix}`)
+                    .setFooter({
+                        text: "© Programmers Hub Bot | Bot Made by: Thomas Shelby#6969 ",
+                    }),
+            ],
+        });
+    }
+    else{
+        if (!prefixco[0]) {
+            await new prefixschema({
+                server: interaction.guild.id,
+                prefix: setnew,
+            })
+                .save()
+                .then(() => {
+                    interaction.reply({
+                        embeds: [
+                            new Discord.MessageEmbed()
+                                .setTitle(`Updated Prefix`)
+                                .setDescription(
+                                    `Prefix has been successfully updated to ${setnew}.`
+                                )
+                                .setFooter({
+                                    text: "© Programmers Hub Bot | Bot Made by: Thomas Shelby#6969 ",
+                                }),
+                        ],
+                    });
+                });
+        } else {
+            await prefixschema
+                .findOneAndUpdate(
+                    { server: interaction.guild.id },
+                    { prefix: setnew },
+                    { new: true }
+                )
+                .then(() => {
+                    interaction.reply({
+                        embeds: [
+                            new Discord.MessageEmbed()
+                                .setTitle(`Updated Prefix`)
+                                .setDescription(
+                                    `Prefix has been successfully updated to ${setnew}.`
+                                )
+                                .setFooter({
+                                    text: "© Programmers Hub Bot | Bot Made by: Thomas Shelby#6969 ",
+                                }),
+                        ],
+                    });
+                }, 1000);
+        }
+    }
+};
 
 module.exports = {
     name: "prefix",
@@ -36,5 +84,5 @@ module.exports = {
             required: false,
         },
     ],
-    run
-}
+    run,
+};

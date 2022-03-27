@@ -16,7 +16,7 @@ const run = async (client, interaction) => {
                     .setStyle("DANGER"),
                 new MessageButton()
                     .setCustomId("botinfo")
-                    .setLabel("Info 💻")
+                    .setLabel("Core 💻")
                     .setStyle("SUCCESS"),
                 new MessageButton()
                     .setCustomId("botmod")
