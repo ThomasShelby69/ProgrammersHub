@@ -42,7 +42,6 @@ const statcord = new Statcord.Client({
 });
 
 // Declaring Slash Commands
-const guildId = "938645824219533322";
 client.loadSlashCommands = (bot, reload) =>
     require("./bot/handlers/slashcommands")(bot, reload);
 client.loadSlashCommands(bot, false);
@@ -80,13 +79,9 @@ client.on("ready", async () => {
         console.log("Statcord Connected");
     });
 
-    // Declaring guild for slash command
-    const guild = client.guilds.cache.get(guildId);
-    if (!guild) return console.error("Target guild not found");
-
     // Setting & Loading Slash command
-    await guild.commands.set([...client.slashcommands.values()]);
-    console.log(`Successfully loaded in ${client.slashcommands.size}`);
+    await client.application.commands.set([...client.slashcommands.values()])
+    console.log(`Successfully loaded in ${client.slashcommands.size}`)
 
     // Login bot
     console.log(`Logged in as ${client.user.tag}!`);

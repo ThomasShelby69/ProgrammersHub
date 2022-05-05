@@ -1,4 +1,4 @@
-require("dotenv").config();
+require("dotenv").config(); 
 const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -10,7 +10,7 @@ const db = require("./src/database/database");
 const path = require("path");
 const bodyParser = require("body-parser");
 
-// Mongoose
+// Mongoose DB
 db.then(() => console.log("Connected to MongoDB.")).catch((err) =>
     console.log(err)
 );
