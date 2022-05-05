@@ -19,6 +19,10 @@ const run = async (client, interaction) => {
                     .setLabel("Core 💻")
                     .setStyle("SUCCESS"),
                 new MessageButton()
+                    .setCustomId("botmisc")
+                    .setLabel("Miscellaneous 💿")
+                    .setStyle("SUCCESS"),
+                new MessageButton()
                     .setCustomId("botmod")
                     .setLabel("Moderation 🛠")
                     .setStyle("SUCCESS"),
@@ -30,6 +34,7 @@ const run = async (client, interaction) => {
             let core = [],
                 music = [],
                 moderation = [],
+                misc = [],
                 cats = [];
 
             readdirSync("./bot/commands/").forEach((dirs) => {
@@ -40,7 +45,7 @@ const run = async (client, interaction) => {
                     "> <:dot:948182294450016286> `" + dirs + " Commands`"
                 );
                 for (const file of commands) {
-                    const command = require(`../commands/${dirs}/${file}`);
+                    const command = require(`../../commands/${dirs}/${file}`);
                     if (dirs == "Core") {
                         core.push(
                             "> <:dot:948182294450016286> `" +
@@ -51,6 +56,13 @@ const run = async (client, interaction) => {
                     if (dirs == "Moderation") {
                         moderation.push(
                             "> <:dot2:949259396175765524> `" +
+                                command.help.name.toLowerCase() +
+                                "`"
+                        );
+                    }
+                    if (dirs == "Miscellaneous") {
+                        misc.push(
+                            "> <:dot:957663246507196456> `" +
                                 command.help.name.toLowerCase() +
                                 "`"
                         );
@@ -78,7 +90,7 @@ const run = async (client, interaction) => {
                 .setThumbnail(client.user.displayAvatarURL());
 
             const embed2 = new MessageEmbed()
-                .setTitle("Information Commands 💻")
+                .setTitle("Core Commands 💻")
                 .setColor("#000")
                 .setDescription(`${core.join("\n")}`)
                 .setFooter({
@@ -99,6 +111,15 @@ const run = async (client, interaction) => {
                 .setTitle("Moderation Commands 🛠")
                 .setColor("#000")
                 .setDescription(`${moderation.join("\n")}`)
+                .setFooter({
+                    text: "© Programmers Hub Bot | Bot Made by: Thomas Shelby#6969 ",
+                })
+                .setThumbnail(client.user.displayAvatarURL());
+
+            const embed5 = new MessageEmbed()
+                .setTitle("Miscellaneous Commands 💿")
+                .setColor("#000")
+                .setDescription(`${misc.join("\n")}`)
                 .setFooter({
                     text: "© Programmers Hub Bot | Bot Made by: Thomas Shelby#6969 ",
                 })
@@ -145,6 +166,11 @@ const run = async (client, interaction) => {
                         embeds: [embed4],
                         components: [row],
                     });
+                if (id === "botmisc")
+                    return ButtonInteraction.update({
+                        embeds: [embed5],
+                        components: [row],
+                    });
             });
         } else if (cmdinfo) {
             readdirSync("./bot/commands/").forEach((dirs) => {
@@ -152,7 +178,7 @@ const run = async (client, interaction) => {
                     (files) => files.endsWith(".js")
                 );
                 for (const file of commands) {
-                    const command = require(`../commands/${dirs}/${file}`);
+                    const command = require(`../../commands/${dirs}/${file}`);
                     if (command.help.name.toLowerCase() == cmdinfo) {
                         let commandembed = executehelpconditions(command);
                         interaction.reply({
@@ -176,7 +202,7 @@ const run = async (client, interaction) => {
                 }
             });
             if (invalidcom == true) {
-                message.reply({
+                interaction.reply({
                     embeds: [
                         new Discord.MessageEmbed()
                             .setTitle(`Invalid Command`)

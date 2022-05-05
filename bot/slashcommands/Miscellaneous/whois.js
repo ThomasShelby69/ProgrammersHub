@@ -8,7 +8,6 @@ const run = async (client, interaction) => {
     if(memberparam==null){
         memberuser=interaction.guild.members.cache.get(interaction.user.id);
     }
-    console.log(memberuser);
 
     let rolesname;
     let roles = memberuser.roles.cache

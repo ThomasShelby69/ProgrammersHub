@@ -4,10 +4,10 @@ const fs = require('fs');
 
 const run = async (client, interaction) => {
     const owner = client.users.cache.find(user => user.id = interaction.guild.ownerId.toString()).toString();
-    const announcementchannel = message.guild.channels.cache.filter(c => c.type === "GUILD_NEWS").size;
-    const textchannel = message.guild.channels.cache.filter(c => c.type === "GUILD_TEXT").size + announcementchannel;
-    const stagechannel = message.guild.channels.cache.filter(c => c.type === "GUILD_STAGE_VOICE").size;
-    const voicechannel = message.guild.channels.cache.filter(c => c.type === "GUILD_VOICE").size + stagechannel;
+    const announcementchannel = interaction.guild.channels.cache.filter(c => c.type === "GUILD_NEWS").size;
+    const textchannel = interaction.guild.channels.cache.filter(c => c.type === "GUILD_TEXT").size + announcementchannel;
+    const stagechannel = interaction.guild.channels.cache.filter(c => c.type === "GUILD_STAGE_VOICE").size;
+    const voicechannel = interaction.guild.channels.cache.filter(c => c.type === "GUILD_VOICE").size + stagechannel;
     const categorycount = interaction.guild.channels.cache.filter(ch => ch.type === 'GUILD_CATEGORY').size
     interaction.reply({
         embeds: [

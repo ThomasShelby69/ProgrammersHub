@@ -1,7 +1,7 @@
 const Discord = module.require("discord.js");
 const fs = require("fs");
 const mongoose = require("mongoose");
-const prefixschema = require("../db/prefix-schema");
+const prefixschema = require("../../db/prefix-schema");
 
 const run = async (client, interaction) => {
     let setnew = interaction.options.getString("set");

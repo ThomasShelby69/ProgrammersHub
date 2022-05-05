@@ -14,8 +14,8 @@ const run = async (client, interaction) => {
   const guild = client.guilds.cache.size;
   let dir = 0;
 
-  readdirSync("./bot/commands/").forEach((dirs) => {
-    const commands = readdirSync(`./bot/commands/${dirs}`).filter((files) =>
+  readdirSync("././bot/commands/").forEach((dirs) => {
+    const commands = readdirSync(`././bot/commands/${dirs}`).filter((files) =>
       files.endsWith(".js")
     );
     for (const file of commands) {

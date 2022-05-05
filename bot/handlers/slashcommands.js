@@ -7,14 +7,16 @@ const getFiles = (path, ending) => {
 module.exports = (bot, reload) => {
     const { client } = bot 
 
-    let slashcommands = getFiles("./bot/slashcommands/", ".js")
+    fs.readdirSync("./bot/slashcommands/").forEach((dirs) => {
+        let slashcommands = getFiles(`./bot/slashcommands/${dirs}/`, ".js")
 
-    if (slashcommands.length === 0)
-        console.log("No slash commands loaded")
-
-    slashcommands.forEach(f => {
-        if (reload) delete require.cache[require.resolve(`../slashcommands/${f}`)]
-        const slashcmd = require(`../slashcommands/${f}`)
-        client.slashcommands.set(slashcmd.name, slashcmd)
-    })
-}
+        if (slashcommands.length === 0)
+            console.log("No slash commands loaded")
+    
+        slashcommands.forEach(f => {
+            if (reload) delete require.cache[require.resolve(`../slashcommands/${dirs}/${f}`)]
+            const slashcmd = require(`../slashcommands/${dirs}/${f}`)
+            client.slashcommands.set(slashcmd.name, slashcmd)
+        })
+    });
+} 
